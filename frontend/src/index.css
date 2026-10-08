@@ -2,12 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', sans-serif;
+@layer base {
+  body {
+    background-color: #070A11;
+    color: #F1F5F9;
+    font-family: 'Inter', sans-serif;
+  }
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
 }
 
-code, pre {
-  font-family: 'JetBrains Mono', monospace;
+/* Custom cyber background patterns */
+.cyber-grid-bg {
+  background-image: radial-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px),
+                    radial-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+.cyber-lines-bg {
+  background-linear-gradient: 90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(13, 19, 34, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.12);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(19, 27, 46, 0.85);
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+}
+
+.glass-card-red {
+  background: rgba(239, 68, 68, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.glass-card-emerald {
+  background: rgba(16, 185, 129, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* Glowing text effects */
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+.glow-text-blue {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.glow-text-red {
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 /* Custom scrollbar */
@@ -17,14 +74,25 @@ code, pre {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0F17;
+  background: #070A11;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F2937;
+  background: #1E293B;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: #00F0FF;
+}
+
+/* Scan line animation overlay */
+.scan-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00F0FF, transparent);
+  box-shadow: 0 0 15px #00F0FF;
+  animation: scanLine 2.5s ease-in-out infinite;
 }

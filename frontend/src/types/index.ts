@@ -1,110 +1,154 @@
-export interface Repository {
-  id: number;
+export type NavigationTab = 
+  | 'overview'
+  | 'threat-detection'
+  | 'ai-content'
+  | 'fake-account'
+  | 'phishing'
+  | 'bot-detection'
+  | 'deepfake'
+  | 'attack-map'
+  | 'alerts'
+  | 'analytics'
+  | 'settings'
+  | 'landing';
+
+export type ThreatSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'SAFE';
+
+export type ThreatCategory = 
+  | 'phishing'
+  | 'malware'
+  | 'bot'
+  | 'account'
+  | 'deepfake'
+  | 'ai-generated'
+  | 'ddos'
+  | 'zero-day';
+
+export interface UnifiedThreatResult {
+  inputType: 'text' | 'url' | 'image' | 'video' | 'social' | 'account';
+  threatLevel: ThreatSeverity;
+  riskScore: number;
+  confidence: number;
+  classification: string;
+  explanation: string;
+  indicators: string[];
+  recommendation: string;
+  evaluatedAt: string;
+  targetSubject: string;
+}
+
+export interface AIContentAnalysisResult {
+  aiProbability: number;
+  humanProbability: number;
+  confidence: number;
+  perplexityScore: number;
+  burstinessScore: number;
+  indicators: { label: string; score: number; status: 'warning' | 'normal' }[];
+  summary: string;
+  syntaxPattern: string;
+}
+
+export interface FakeAccountResult {
+  handle: string;
+  platform: string;
+  riskScore: number;
+  classification: string;
+  accountAgeDays: number;
+  profileCompleteness: number; // percentage
+  followerFollowingRatio: number;
+  riskFactors: { name: string; severity: 'high' | 'medium' | 'low'; description: string }[];
+  verdict: string;
+}
+
+export interface PhishingScanResult {
+  urlOrMessage: string;
+  urlStatus: 'Suspicious' | 'Malicious' | 'Clean';
+  riskLevel: ThreatSeverity;
+  riskScore: number;
+  domainAge: string;
+  httpsStatus: boolean;
+  domainEntropy: number; // 0-5.0
+  redirectCount: number;
+  typosquattingMatch: string | null;
+  suspiciousKeywords: string[];
+  recommendation: string;
+}
+
+export interface BotTrafficMetrics {
+  humanPercent: number;
+  automatedPercent: number;
+  suspiciousPercent: number;
+  requestsPerMin: number;
+  topAnomalies: { ip: string; country: string; rpm: number; botType: string; status: string }[];
+  trafficGraphData: { time: string; human: number; bot: number; suspicious: number }[];
+}
+
+export interface DeepfakeAnalysisResult {
+  fileName: string;
+  mediaType: 'image' | 'video';
+  authenticityScore: number;
+  deepfakeProbability: number;
+  riskLevel: ThreatSeverity;
+  facialInconsistencyScore: number;
+  compressionArtifactScore: number;
+  aiGenerationScore: number;
+  audioLipSyncScore: number;
+  indicators: string[];
+  disclaimer: string;
+}
+
+export interface AttackNode {
+  id: string;
+  source: { name: string; lat: number; lng: number; ip: string; country: string };
+  target: { name: string; lat: number; lng: number; ip: string; country: string };
+  type: ThreatCategory;
+  severity: ThreatSeverity;
+  timestamp: string;
+}
+
+export interface SecurityAlert {
+  id: string;
   name: string;
-  full_name: string;
-  owner: string;
-  default_branch: string;
-  is_private: boolean;
-  webhook_active: boolean;
-  webhook_id?: string;
-  description?: string;
-  language?: string;
-  quality_score: number;
-  security_score: number;
-  created_at: string;
-  open_prs_count?: number;
+  timestamp: string;
+  source: string;
+  target: string;
+  riskScore: number;
+  severity: ThreatSeverity;
+  status: 'active' | 'investigating' | 'resolved' | 'ignored';
+  recommendedAction: string;
+  iocs: string[];
+  category: ThreatCategory;
 }
 
-export interface ReviewComment {
-  id: number;
-  pull_request_id: number;
-  file_path: string;
-  line_number?: number;
-  severity: 'Critical' | 'High' | 'Medium' | 'Low';
-  category: string;
-  title: string;
-  description: string;
-  why_it_matters: string;
-  suggested_fix?: string;
-  example_code?: string;
-  status: 'open' | 'resolved' | 'ignored';
-  created_at: string;
+export interface RealTimeFeedEvent {
+  id: string;
+  timestamp: string;
+  threatType: string;
+  severity: ThreatSeverity;
+  source: string;
+  status: 'Flagged' | 'Quarantined' | 'Blocked' | 'Monitoring';
+  action: string;
 }
 
-export interface SecurityFinding {
-  id: number;
-  repository_id: number;
-  pull_request_id?: number;
-  vulnerability_type: string;
-  cve_id?: string;
-  severity: 'Critical' | 'High' | 'Medium' | 'Low';
-  file_path: string;
-  line_number?: number;
-  raw_snippet?: string;
-  description: string;
-  recommendation: string;
-  risk_score: number;
-  status: string;
-  created_at: string;
+export interface CopilotMessage {
+  id: string;
+  sender: 'user' | 'assistant';
+  text: string;
+  timestamp: string;
+  suggestedActions?: string[];
 }
 
-export interface ArchitectureFinding {
-  id: number;
-  repository_id: number;
-  pull_request_id?: number;
-  principle_violated: string;
-  severity: 'High' | 'Medium' | 'Low';
-  component: string;
-  description: string;
-  recommendation: string;
-  design_pattern_suggested?: string;
-  status: string;
-  created_at: string;
-}
-
-export interface PullRequest {
-  id: number;
-  repository_id: number;
-  number: number;
-  title: string;
-  body?: string;
-  author: string;
-  author_avatar?: string;
-  head_branch: string;
-  base_branch: string;
-  state: string;
-  status: 'pending' | 'analyzing' | 'completed' | 'failed';
-  quality_score: number;
-  security_score: number;
-  architecture_score: number;
-  overall_score: number;
-  summary?: string;
-  diff_data?: {
-    raw?: string;
-    files?: Array<{
-      filename: string;
-      additions: number;
-      deletions: number;
-      added_lines: Array<{ line_number: number; content: string }>;
-      removed_lines: Array<{ line_number: number; content: string }>;
-    }>;
+export interface UserProfile {
+  name: string;
+  email: string;
+  role: string;
+  organization: string;
+  avatarUrl: string;
+  twoFactorEnabled: boolean;
+  apiKey: string;
+  notificationPreferences: {
+    criticalEmail: boolean;
+    slackWebhook: boolean;
+    weeklyReport: boolean;
   };
-  created_at: string;
-  updated_at: string;
-  review_comments: ReviewComment[];
-  security_findings: SecurityFinding[];
-  architecture_findings: ArchitectureFinding[];
-}
-
-export interface DashboardMetrics {
-  total_repositories: number;
-  total_pull_requests: number;
-  total_issues_found: number;
-  critical_security_alerts: number;
-  avg_quality_score: number;
-  avg_security_score: number;
-  avg_architecture_score: number;
-  technical_debt_hours: number;
-  recent_prs: PullRequest[];
-  security_summary: Record<string, number>;
 }
